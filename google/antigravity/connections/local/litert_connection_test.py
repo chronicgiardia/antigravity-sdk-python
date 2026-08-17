@@ -867,6 +867,10 @@ class LiteRTConnectionTest(unittest.IsolatedAsyncioTestCase):
         mock.patch.object(logging.Logger, "isEnabledFor", return_value=False),
     ):
       mock_litert_lm.LogSeverity.SILENT = 1000
+      # VERBOSE is stubbed too so that taking the wrong branch reports the
+      # actual severity (0) instead of int(MagicMock()) == 1, which obscures
+      # the cause of the failure.
+      mock_litert_lm.LogSeverity.VERBOSE = 0
       mock_litert_lm.set_min_log_severity = mock.MagicMock()
       config = litert_connection_config.LiteRTAgentConfig(
           model_path="/tmp/model.litertlm",

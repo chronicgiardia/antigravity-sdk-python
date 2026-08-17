@@ -14,6 +14,7 @@
 
 """Validates default implementations in the Connection abstract base class."""
 
+import logging
 import unittest
 import warnings
 import pydantic
@@ -54,6 +55,17 @@ class ConnectionTest(unittest.IsolatedAsyncioTestCase):
 
 
 class DebugConfigTest(unittest.TestCase):
+
+  def setUp(self):
+    super().setUp()
+    # Constructing an AgentConfig with debug_config enabled runs
+    # DebugConfig.apply_logging() from a pydantic model validator, which
+    # permanently raises the SDK logger to DEBUG. Restore it so the level does
+    # not leak into unrelated tests (e.g. LiteRT's log-severity selection),
+    # which would otherwise make them order-dependent.
+    sdk_logger = logging.getLogger("google.antigravity")
+    original_level = sdk_logger.level
+    self.addCleanup(sdk_logger.setLevel, original_level)
 
   def test_debug_config_defaults(self):
     cfg = connection.DebugConfig()

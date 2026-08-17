@@ -119,3 +119,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# protoc-generated stubs. Regenerated from google/antigravity/proto/*.proto by
+# the build/CI (see .kokoro/presubmit.sh) via:
+#   python3 -m grpc_tools.protoc -I. --python_out=. google/antigravity/proto/*
+#   touch google/antigravity/proto/__init__.py
+google/antigravity/proto/*_pb2.py
+google/antigravity/proto/*_pb2.pyi
+google/antigravity/proto/*_pb2_grpc.py
+google/antigravity/proto/__init__.py
